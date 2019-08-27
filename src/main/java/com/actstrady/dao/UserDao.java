@@ -14,15 +14,15 @@ import java.util.List;
  */
 public class UserDao {
     /**
-     * 根据账号密码查询
+     * 根据账号密码查询用户
      *
      * @param username 用户名
      * @param password 密码
      * @return 用户类
      */
     public User queryByUsernameAndPassword(String username, String password) {
-        String sql = "select id, username, password, name, email, type from mall.user where username = ? and password" +
-                " = ?";
+        String sql = "select id, username, password, name, email, type from mall.user " +
+                "where username = ? and password= ?";
         List<Object> params = new ArrayList<>();
         params.add(username);
         params.add(password);

@@ -15,7 +15,11 @@ public class UserService {
     /**
      * 最大错误登录次数
      */
-    public static final int loginMax = 3;
+    private static final int LOGIN_MAX = 3;
+    /**
+     * 当前登录user
+     */
+    private static User loginUser;
 
     /**
      * 登录业务
@@ -27,6 +31,7 @@ public class UserService {
     public String login(String username, String password) {
         UserDao userDao = new UserDao();
         User user = userDao.queryByUsernameAndPassword(username, password);
+        loginUser = user;
         if (user == null) {
             return "failure";
         } else if (user.getType() == 0) {
@@ -45,7 +50,7 @@ public class UserService {
     public void loginOver(Map<String, Integer> loginNumber, String username) {
         Integer times = loginNumber.get(username);
         loginNumber.put(username, times + 1);
-        if (times == loginMax) {
+        if (times == LOGIN_MAX) {
             System.out.println("请一分钟后再次登录！");
             try {
                 Thread.sleep(60 * 1000);
@@ -54,5 +59,13 @@ public class UserService {
             }
             loginNumber.put(username, 0);
         }
+    }
+
+    /**
+     * 获取当前登录user
+     * @return 当前登录的user
+     */
+    public static User getLoginUser(){
+        return loginUser;
     }
 }

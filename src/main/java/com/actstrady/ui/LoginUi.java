@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * 1) 登录功能  如果已经登录，不需要重复登录
+ * 登录界面
  *
  * @author : ActStrady@tom.com
  * @date : 2019/8/26 19:51
@@ -35,10 +35,12 @@ public class LoginUi {
                 // 使用putIfAbsent，只有没有的时候才插入
                 loginNumber.putIfAbsent(username, 1);
                 userService.loginOver(loginNumber, username);
-            } else if ("admin".equals(result)) {
-
+            } else if (result != null) {
+                new MenuUi(result, UserService.getLoginUser().getName()).init();
             } else {
-
+                System.out.println("系统异常，请联系管理员！");
+                System.exit(-1);
+                break;
             }
         }
     }
