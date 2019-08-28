@@ -1,6 +1,7 @@
 package com.actstrady.utils;
 
 import com.actstrady.pojo.User;
+import com.mysql.cj.jdbc.admin.MiniAdmin;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,9 +13,12 @@ public class DbUtilsTest {
 
     @Test
     public void uniqQuery() {
-        List<Object> list = new ArrayList<>();
-        list.add("admin");
-        User user = DbUtils.uniqQuery(User.class, "select * from mall.user where username=?", list);
+        User user = DbUtils.uniqQuery(User.class, "select * from mall.user where username=?", "admin");
         System.out.println(user);
+    }
+    @Test
+    public void query() {
+        List<User> list = DbUtils.query(User.class, "select * from mall.user");
+        System.out.println(list);
     }
 }

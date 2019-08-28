@@ -10,14 +10,24 @@ create table mall.user
     username varchar(20) unique not null comment '用户名',
     password varchar(20)        not null comment '密码',
     name     varchar(10)        not null comment '真实姓名',
-    email    varchar(20) comment '邮箱',
-    type     bit default 1 comment '用户类型0管理员 1普通用户'
+    email    varchar(20) unique comment '邮箱',
+    type     int default 1 comment '用户类型0管理员 1普通用户'
 ) comment '用户表';
 # 插入数据
 insert into mall.user(username, password, name, email, type)
 values ('admin', 'admin', '张三', 'act@act.com', 0);
 insert into mall.user(username, password, name, email, type)
 values ('super', '147258', '张四', 'sys@act.com', 1);
+insert into mall.user(username, password, name, email, type)
+values ('tom', '147258', '王五', 'wangwu@act.com', 1);
+insert into mall.user(username, password, name, email, type)
+values ('jerry', '147258', '刘萌', 'liumeng@act.com', 1);
+insert into mall.user(username, password, name, email, type)
+values ('hello', '147258', '王鬼', 'swanggui@act.com', 1);
+insert into mall.user(username, password, name, email, type)
+values ('hi', '147258', '李冰', 'libing@act.com', 1);
+insert into mall.user(username, password, name, email, type)
+values ('yellow', '147258', '张四', 'zhang@act.com', 1);
 
 # 商品类别表
 drop table if exists mall.product_group;
