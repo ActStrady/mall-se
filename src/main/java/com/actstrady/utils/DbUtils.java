@@ -130,11 +130,46 @@ public class DbUtils {
     /**
      * 删除
      *
-     * @param sql sql
+     * @param sql    sql
      * @param params 条件
      * @return 非0就是成功
      */
     public static int delete(String sql, Object... params) {
+        int result = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            for (int i = 0; i < params.length; i++) {
+                statement.setObject(i + 1, params[i]);
+            }
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static int update(Object object, String sql, Object... params) {
+        int result = 0;
+        try {
+            int i = 1;
+            PreparedStatement statement = connection.prepareStatement(sql);
+            Field[] fields = object.getClass().getDeclaredFields();
+            for (; i < fields.length; i++) {
+                Method method =
+                        object.getClass().getDeclaredMethod("get" + StringUtils.toUpperCaseFirst(fields[i].getName()));
+                statement.setObject(i, method.invoke(object));
+            }
+            for (Object param : params) {
+                statement.setObject(i++, param);
+            }
+            result = statement.executeUpdate();
+        } catch (SQLException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static int updateByParams(String sql, Object... params) {
         int result = 0;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);

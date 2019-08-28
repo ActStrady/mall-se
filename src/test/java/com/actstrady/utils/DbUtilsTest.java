@@ -35,4 +35,14 @@ public class DbUtilsTest {
         String sql = "delete from mall.user where id = ?";
         System.out.println(DbUtils.delete(sql, 7));
     }
+
+    @Test
+    public void update() {
+        User user = new User("body", "123456", "孙强", "adt@qq.com", 1);
+        String sql = "update mall.user set username = ?, password = ?, name =?, email = ?, type = ? " +
+                "where id = ?";
+        DbUtils.update(user, sql, 8);
+        String sql2 = "update mall.user set password = ? where id = ?";
+        DbUtils.updateByParams(sql2, "111111", 8);
+    }
 }
