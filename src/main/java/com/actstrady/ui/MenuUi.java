@@ -10,7 +10,7 @@ import java.util.Scanner;
  * @fileName : AdminUi.java
  * @gitHub : https://github.com/ActStrady/mall-se
  */
-class MenuUi {
+public class MenuUi {
     private String type;
     private String name;
     private Scanner scanner = new Scanner(System.in);
@@ -20,7 +20,7 @@ class MenuUi {
         this.name = name;
     }
 
-    void init() {
+    public void init() {
         if ("admin".equals(type)) {
             System.out.println("管理员" + name + "欢迎登录喵喵喵商城管理系统！");
             while (true) {

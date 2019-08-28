@@ -67,6 +67,15 @@ public class DbUtils {
         return t;
     }
 
+    /**
+     * 查询多个
+     *
+     * @param clazz
+     * @param sql
+     * @param params
+     * @param <T>
+     * @return
+     */
     public static <T> List<T> query(Class<T> clazz, String sql, Object... params) {
         List<T> list = new ArrayList<>();
         try {
@@ -81,8 +90,9 @@ public class DbUtils {
                 // 反射获取所有的域（变量）
                 Field[] fields = clazz.getDeclaredFields();
                 for (Field field : fields) {
-                    Method method = clazz.getDeclaredMethod("set" + StringUtils.toUpperCaseFirst(field.getName()),
-                            field.getType());
+                    Method method =
+                            clazz.getDeclaredMethod("set" + StringUtils.toUpperCaseFirst(field.getName()),
+                                    field.getType());
                     method.invoke(t, resultSet.getObject(field.getName()));
                 }
                 list.add(t);
@@ -91,5 +101,22 @@ public class DbUtils {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public static int insert(Object object, String sql) {
+        int result = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            Field[] fields = object.getClass().getDeclaredFields();
+            for (int i = 1; i < fields.length; i++) {
+                Method method =
+                        object.getClass().getDeclaredMethod("get" + StringUtils.toUpperCaseFirst(fields[i].getName()));
+                statement.setObject(i, method.invoke(object));
+            }
+            result = statement.executeUpdate();
+        } catch (SQLException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

@@ -7,21 +7,32 @@ package com.actstrady.pojo;
  * @gitHub : https://github.com/ActStrady/mall-se
  */
 public class User {
-    private int id;
+    private Integer id;
     private String username;
     private String password;
-    private String email;
     private String name;
+    private String email;
     /**
      * 用户类型：0 管理员， 1 普通用户
      */
-    private int type;
+    private Integer type;
+
+    public User() {
+    }
+
+    public User(String username, String password, String name, String email, int type) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.type = type;
+    }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -61,7 +72,7 @@ public class User {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
