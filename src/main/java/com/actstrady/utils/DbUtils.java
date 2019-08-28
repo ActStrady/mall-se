@@ -70,11 +70,11 @@ public class DbUtils {
     /**
      * 查询多个
      *
-     * @param clazz
-     * @param sql
-     * @param params
-     * @param <T>
-     * @return
+     * @param clazz  类型
+     * @param sql    sql
+     * @param params 查询条件
+     * @param <T>    泛型
+     * @return 查询数据列表
      */
     public static <T> List<T> query(Class<T> clazz, String sql, Object... params) {
         List<T> list = new ArrayList<>();
@@ -103,6 +103,13 @@ public class DbUtils {
         return list;
     }
 
+    /**
+     * 插入
+     *
+     * @param object 具体的一个javabean
+     * @param sql    sql
+     * @return 非0就是成功
+     */
     public static int insert(Object object, String sql) {
         int result = 0;
         try {
@@ -115,6 +122,27 @@ public class DbUtils {
             }
             result = statement.executeUpdate();
         } catch (SQLException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 删除
+     *
+     * @param sql sql
+     * @param params 条件
+     * @return 非0就是成功
+     */
+    public static int delete(String sql, Object... params) {
+        int result = 0;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            for (int i = 0; i < params.length; i++) {
+                statement.setObject(i + 1, params[i]);
+            }
+            result = statement.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;

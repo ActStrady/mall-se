@@ -27,6 +27,12 @@ public class DbUtilsTest {
     public void insert() {
         User user = new User("body", "123456", "李强", "adt@qq.com", 1);
         String sql = "insert into mall.user(username, password, name, email, type) values(?, ?, ?, ?, ?)";
-        DbUtils.insert(user, sql);
+        System.out.println(DbUtils.insert(user, sql));
+    }
+
+    @Test
+    public void delete() {
+        String sql = "delete from mall.user where id = ?";
+        System.out.println(DbUtils.delete(sql, 7));
     }
 }
