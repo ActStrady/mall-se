@@ -39,10 +39,10 @@ public class DbUtilsTest {
     @Test
     public void update() {
         User user = new User("body", "123456", "孙强", "adt@qq.com", 1);
-        String sql = "update mall.user set username = ?, password = ?, name =?, email = ?, type = ? " +
-                "where id = ?";
-        DbUtils.update(user, sql, 8);
+        String sql = "update mall.user set username = ?, password = ?, name =?, email = ?, type = ? "
+                + "where id = ?";
+        DbUtils.update(user, sql, 7);
         String sql2 = "update mall.user set password = ? where id = ?";
-        DbUtils.updateByParams(sql2, "111111", 8);
+        DbUtils.updateByParams(sql2, "111111", 7);
     }
 }

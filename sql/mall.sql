@@ -6,12 +6,16 @@ create database mall;
 drop table if exists mall.user;
 create table mall.user
 (
-    id       int primary key auto_increment comment '主键',
-    username varchar(20) unique not null comment '用户名',
-    password varchar(20)        not null comment '密码',
-    name     varchar(10)        not null comment '真实姓名',
-    email    varchar(20) unique comment '邮箱',
-    type     int default 1 comment '用户类型0管理员 1普通用户'
+    id          int primary key auto_increment comment '主键',
+    username    varchar(20) unique not null comment '用户名',
+    password    varchar(20)        not null comment '密码',
+    name        varchar(10)        not null comment '真实姓名',
+    email       varchar(20) unique comment '邮箱',
+    type        int      default 1 comment '用户类型0管理员 1普通用户',
+    is_delete   bit      default 0 comment '是否删除',
+    create_time datetime default current_timestamp comment '创建的时间',
+    update_time datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
+    delete_time datetime comment '删除时间'
 ) comment '用户表';
 # 插入数据
 insert into mall.user(username, password, name, email, type)
@@ -33,11 +37,24 @@ values ('yellow', '147258', '张四', 'zhang@act.com', 1);
 drop table if exists mall.product_group;
 create table mall.product_group
 (
-    id          int primary key auto_increment comment '主键',
-    name        varchar(20) unique not null comment '名称',
-    creator     int                not null comment '创建者id',
-    creatorName varchar(20) unique comment '创建者名'
+    id           int primary key auto_increment comment '主键',
+    name         varchar(20) unique not null comment '名称',
+    creator      int                not null comment '创建者id',
+    creator_name varchar(20) comment '创建者名',
+    is_delete    bit      default 0 comment '是否删除',
+    create_time  datetime default current_timestamp comment '创建的时间',
+    update_time  datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
+    delete_time  datetime comment '删除时间'
 ) comment '商品类别表';
+# 插入数据
+insert into mall.product_group(name, creator, creator_name)
+values ('男装', 1, 'admin');
+insert into mall.product_group(name, creator, creator_name)
+values ('女装', 1, 'admin');
+insert into mall.product_group(name, creator, creator_name)
+values ('数码', 1, 'admin');
+insert into mall.product_group(name, creator, creator_name)
+values ('文娱', 1, 'admin');
 
 # 商品类别表外键
 alter table mall.product_group
@@ -53,11 +70,28 @@ create table mall.product
     price         decimal      not null comment '价格',
     brand         varchar(20) comment '品牌',
     stock         int comment '库存',
-    state         int default 1 comment '状态0下架，1正常，2无货，3缺货',
+    state         int      default 1 comment '状态0下架，1正常，2无货，3缺货',
     product_group int          not null comment '商品类别',
     creator       int          not null comment '创建者id',
-    creatorName   varchar(20) unique comment '创建者名'
+    creator_name  varchar(20) comment '创建者名',
+    is_delete     bit      default 0 comment '是否删除',
+    create_time   datetime default current_timestamp comment '创建的时间',
+    update_time   datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
+    delete_time   datetime comment '删除时间'
 ) comment '商品表';
+# 插入
+insert into mall.product(name, price, brand, stock, state, product_group, creator, creator_name)
+values ('男士运动鞋', 99.9, '李宁', 20, 1, 1, 1, 'admin');
+insert into mall.product(name, price, brand, stock, state, product_group, creator, creator_name)
+values ('男士休闲衣', 49.9, '以纯', 10, 1, 1, 1, 'admin');
+insert into mall.product(name, price, brand, stock, state, product_group, creator, creator_name)
+values ('女士运动裤', 199.9, '耐克', 2, 3, 2, 1, 'admin');
+insert into mall.product(name, price, brand, stock, state, product_group, creator, creator_name)
+values ('智能手机', 2999, '华为', 0, 2, 3, 1, 'admin');
+insert into mall.product(name, price, brand, stock, state, product_group, creator, creator_name)
+values ('java编程思想', 120.9, '华章科技', 29, 0, 4, 1, 'admin');
+insert into mall.product(name, price, brand, stock, state, product_group, creator, creator_name)
+values ('python数据分析', 98.8, '图灵图书', 20, 1, 4, 1, 'admin');
 
 # 商品表外键
 alter table mall.product
@@ -67,17 +101,7 @@ alter table mall.product
     add constraint product_fk_creator
         foreign key (creator) references mall.user (id);
 
-# 订单表
-drop table if exists mall.order;
-create table mall.order
-(
-    id          int primary key auto_increment comment '主键',
-    state       int default 1 comment '状态：0订单关闭， 1未付款， 2未发货， 3未确认收货，4未评价，5订单完成',
-    address     int not null comment '地址',
-    creator     int not null comment '创建者id',
-    creatorName varchar(20) unique comment '创建者名'
-) comment '订单表';
-
+# 地址表
 drop table if exists mall.address;
 create table mall.address
 (
@@ -87,10 +111,27 @@ create table mall.address
     consignee_phone   varchar(11)  not null comment '收货电话'
 ) comment '地址表';
 
+# 订单表
+drop table if exists mall.order;
+create table mall.order
+(
+    id          int primary key auto_increment comment '主键',
+    order_no    varchar(100) not null unique comment '订单号',
+    state       int default 1 comment '状态：0订单关闭， 1未付款， 2未发货， 3未确认收货，4未评价，5订单完成',
+    address     int          not null comment '地址',
+    creator     int          not null comment '创建者id',
+    creatorName varchar(20) comment '创建者名',
+    create_time datetime default current_timestamp comment '创建的时间',
+    update_time datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
+    delete_time datetime comment '删除时间'
+) comment '订单表';
+
+
 # 订单表外键
 alter table mall.order
     add constraint order_fk_address
         foreign key (address) references mall.address (id);
+
 
 # 订单详情表
 drop table if exists mall.order_detail;
@@ -107,4 +148,4 @@ alter table mall.order_detail
         foreign key (product_id) references mall.product (id);
 alter table mall.order_detail
     add constraint order_detail_fk_order_id
-        foreign key (order_id) references mall.order(id);
+        foreign key (order_id) references mall.order (id);
