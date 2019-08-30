@@ -1,3 +1,4 @@
+# TODO creator_name算一个冗余字段，后期看查询是否频繁决定去留
 # 创建数据库
 drop database if exists mall;
 create database mall;
@@ -106,40 +107,53 @@ drop table if exists mall.address;
 create table mall.address
 (
     id                int primary key auto_increment comment '主键',
+    creator           int          not null comment '创建者id, 标识是谁的地址',
     consignee         varchar(10)  not null comment '收货人',
     consignee_address varchar(100) not null comment '收货地址',
-    consignee_phone   varchar(11)  not null comment '收货电话'
+    consignee_phone   varchar(11)  not null comment '收货电话',
+    is_delete         bit      default 0 comment '是否删除',
+    create_time       datetime default current_timestamp comment '创建的时间',
+    update_time       datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
+    delete_time       datetime comment '删除时间'
 ) comment '地址表';
+
+# 地址表外键
+alter table mall.address
+    add constraint address_fk_creator
+        foreign key (creator) references mall.user (id);
 
 # 订单表
 drop table if exists mall.order;
 create table mall.order
 (
-    id          int primary key auto_increment comment '主键',
-    order_no    varchar(100) not null unique comment '订单号',
-    state       int default 1 comment '状态：0订单关闭， 1未付款， 2未发货， 3未确认收货，4未评价，5订单完成',
-    address     int          not null comment '地址',
-    creator     int          not null comment '创建者id',
-    creatorName varchar(20) comment '创建者名',
-    create_time datetime default current_timestamp comment '创建的时间',
-    update_time datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
-    delete_time datetime comment '删除时间'
+    id           int primary key auto_increment comment '主键',
+    order_no     varchar(100) not null unique comment '订单号',
+    state        int      default 1 comment '状态：0订单关闭1未付款2未发货3未确认收货4未评价5订单完',
+    address      int          not null comment '地址',
+    creator      int          not null comment '创建者id',
+    creator_name varchar(20) comment '创建者名',
+    is_delete    bit      default 0 comment '是否删除',
+    create_time  datetime default current_timestamp comment '创建的时间',
+    update_time  datetime default current_timestamp on update current_timestamp comment '自动更新时间',
+    delete_time  datetime comment '删除时间'
 ) comment '订单表';
-
 
 # 订单表外键
 alter table mall.order
     add constraint order_fk_address
         foreign key (address) references mall.address (id);
 
-
 # 订单详情表
 drop table if exists mall.order_detail;
 create table mall.order_detail
 (
-    product_id int not null comment '商品编号',
-    order_id   int not null comment '订单编号',
-    amount     int not null comment '数量'
+    product_id  int not null comment '商品编号',
+    order_id    int not null comment '订单编号',
+    amount      int not null comment '数量',
+    is_delete   bit      default 0 comment '是否删除',
+    create_time datetime default current_timestamp comment '创建的时间',
+    update_time datetime default current_timestamp on update current_timestamp comment '更新自动更新时间',
+    delete_time datetime comment '删除时间'
 ) comment '订单详情表';
 
 # 订单详情外键
