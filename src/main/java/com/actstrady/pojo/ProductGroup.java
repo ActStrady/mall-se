@@ -4,66 +4,29 @@ import java.util.Date;
 
 /**
  * @author : ActStrady@tom.com
- * @date : 2019/8/26 20:01
- * @fileName : User.java
+ * @date : 2019/8/30 20:39
+ * @fileName : ProductGroup.java
  * @gitHub : https://github.com/ActStrady/mall-se
  */
-public class User {
+public class ProductGroup {
     private Integer id;
-    private String username;
-    private String password;
     private String name;
-    private String email;
-    /**
-     * 用户类型：0 管理员， 1 普通用户
-     */
-    private Integer type;
+    private Integer creator;
+    private String creatorName;
     private Boolean isDelete;
     private Date createTime;
     private Date updateTime;
     private Date deleteTime;
 
-    public User() {
+    public ProductGroup() {
     }
 
-    public User(String username, String password, String name, String email, int type) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.type = type;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getName() {
@@ -74,12 +37,20 @@ public class User {
         this.name = name;
     }
 
-    public int getType() {
-        return type;
+    public Integer getCreator() {
+        return creator;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setCreator(Integer creator) {
+        this.creator = creator;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     public Boolean getIsDelete() {
@@ -116,13 +87,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "ProductGroup{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", type=" + type +
+                ", creator=" + creator +
+                ", creatorName='" + creatorName + '\'' +
                 ", isDelete=" + isDelete +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

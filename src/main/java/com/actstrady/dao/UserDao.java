@@ -1,5 +1,6 @@
 package com.actstrady.dao;
 
+import com.actstrady.pojo.ProductGroup;
 import com.actstrady.pojo.User;
 import com.actstrady.utils.DbUtils;
 
@@ -23,9 +24,6 @@ public class UserDao {
     public User queryByUsernameAndPassword(String username, String password) {
         String sql = "select id, username, password, name, email, type from mall.user " +
                 "where username = ? and password= ?";
-        List<Object> params = new ArrayList<>();
-        params.add(username);
-        params.add(password);
-        return DbUtils.uniqQuery(User.class, sql, params);
+        return DbUtils.uniqQuery(User.class, sql, username, password);
     }
 }

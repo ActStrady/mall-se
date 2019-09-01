@@ -42,7 +42,5 @@ public class DbUtilsTest {
         String sql = "update mall.user set username = ?, password = ?, name =?, email = ?, type = ? "
                 + "where id = ?";
         DbUtils.update(user, sql, 7);
-        String sql2 = "update mall.user set password = ? where id = ?";
-        DbUtils.updateByParams(sql2, "111111", 7);
     }
 }

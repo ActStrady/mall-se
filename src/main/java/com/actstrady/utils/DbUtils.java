@@ -6,19 +6,28 @@ import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
+ * jdbc工具类
+ *
  * @author : ActStrady@tom.com
  * @date : 2019/8/26 20:09
  * @fileName : DBUtils.java
  * @gitHub : https://github.com/ActStrady/mall-se
  */
 public class DbUtils {
-    // TODO 写入配置文件
+    /**
+     * TODO 写入配置文件
+     */
     private static final String URL = "jdbc:mysql:///";
     private static final String USER = "root";
     private static final String PASSWORD = "root";
     private static Connection connection;
+    private static int result = 0;
+
+    private static Pattern pattern = Pattern.compile("[A-Z]");
 
     static {
         try {
@@ -39,7 +48,6 @@ public class DbUtils {
      * @return 单个类
      */
     public static <T> T uniqQuery(Class<T> clazz, String sql, Object... params) {
-        // 要注意判空
         T t = null;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -55,8 +63,14 @@ public class DbUtils {
                 for (Method method : methods) {
                     if (method.getName().contains("set")) {
                         // 获取域的名称
-                        String fieldName = method.getName().toLowerCase().substring(3);
+                        String fieldName = StringUtils.toLowerCaseFirst(method.getName().substring(3));
+                        Matcher matcher = pattern.matcher(fieldName);
+                        if (matcher.find()) {
+                            // 将驼峰转化为下划线
+                            fieldName = fieldName.replaceAll("[A-Z]+", "_$0").
+                        }
                         // 执行方法（给新对象设置值）
+                        System.out.println(resultSet.getObject(fieldName));
                         method.invoke(t, resultSet.getObject(fieldName));
                     }
                 }
@@ -80,20 +94,20 @@ public class DbUtils {
         List<T> list = new ArrayList<>();
         try {
             // 动态创建对象
-            T t = clazz.newInstance();
             PreparedStatement statement = connection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
+                T t = clazz.newInstance();
                 // 反射获取所有的域（变量）
                 Field[] fields = clazz.getDeclaredFields();
-                for (Field field : fields) {
+                for (int i = 0; i < fields.length; i++) {
                     Method method =
-                            clazz.getDeclaredMethod("set" + StringUtils.toUpperCaseFirst(field.getName()),
-                                    field.getType());
-                    method.invoke(t, resultSet.getObject(field.getName()));
+                            clazz.getDeclaredMethod("set" + StringUtils.toUpperCaseFirst(fields[i].getName()),
+                                    fields[i].getType());
+                    method.invoke(t, resultSet.getObject(i + 1));
                 }
                 list.add(t);
             }
@@ -111,14 +125,15 @@ public class DbUtils {
      * @return 非0就是成功
      */
     public static int insert(Object object, String sql) {
-        int result = 0;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             Field[] fields = object.getClass().getDeclaredFields();
             for (int i = 1; i < fields.length; i++) {
                 Method method =
                         object.getClass().getDeclaredMethod("get" + StringUtils.toUpperCaseFirst(fields[i].getName()));
-                statement.setObject(i, method.invoke(object));
+                if (method.invoke(object) != null) {
+                    statement.setObject(i, method.invoke(object));
+                }
             }
             result = statement.executeUpdate();
         } catch (SQLException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
@@ -135,7 +150,6 @@ public class DbUtils {
      * @return 非0就是成功
      */
     public static int delete(String sql, Object... params) {
-        int result = 0;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
@@ -149,7 +163,6 @@ public class DbUtils {
     }
 
     public static int update(Object object, String sql, Object... params) {
-        int result = 0;
         try {
             int i = 1;
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -164,20 +177,6 @@ public class DbUtils {
             }
             result = statement.executeUpdate();
         } catch (SQLException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public static int updateByParams(String sql, Object... params) {
-        int result = 0;
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            for (int i = 0; i < params.length; i++) {
-                statement.setObject(i + 1, params[i]);
-            }
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;

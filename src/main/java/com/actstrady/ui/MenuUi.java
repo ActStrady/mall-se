@@ -1,5 +1,12 @@
 package com.actstrady.ui;
 
+import com.actstrady.pojo.ProductGroup;
+import com.actstrady.pojo.User;
+import com.actstrady.service.ProductGroupService;
+import com.actstrady.service.UserService;
+import com.actstrady.utils.CommonUtils;
+
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -14,6 +21,7 @@ public class MenuUi {
     private String type;
     private String name;
     private Scanner scanner = new Scanner(System.in);
+    private User loginUser = UserService.getLoginUser();
 
     MenuUi(String type, String name) {
         this.type = type;
@@ -29,6 +37,21 @@ public class MenuUi {
                 String index = scanner.nextLine();
                 switch (index) {
                     case "1":
+                        // 插入商品分类
+                        ProductGroupService productGroupService = new ProductGroupService();
+                        System.out.println("请输入商品分类名称");
+                        String groupName = scanner.nextLine();
+                        ProductGroup productGroup = new ProductGroup();
+                        productGroup.setName(groupName);
+                        productGroup.setCreator(loginUser.getId());
+                        productGroup.setCreatorName(loginUser.getName());
+                        int result = productGroupService.enterGroup(productGroup);
+                        if (result > 0) {
+                            System.out.println("录入成功");
+                            // 显示成功的商品分类
+                            List<ProductGroup> productGroups = productGroupService.queryAllGroup();
+                            CommonUtils.printList(productGroups);
+                        }
                         break;
                     case "2":
                         break;
