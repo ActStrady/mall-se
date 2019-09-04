@@ -1,13 +1,9 @@
 package com.actstrady.utils;
 
 import com.actstrady.pojo.User;
-import com.mysql.cj.jdbc.admin.MiniAdmin;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class DbUtilsTest {
 

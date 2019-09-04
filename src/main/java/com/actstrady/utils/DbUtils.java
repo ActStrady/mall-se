@@ -24,16 +24,19 @@ public class DbUtils {
     private static final String URL = "jdbc:mysql:///";
     private static final String USER = "root";
     private static final String PASSWORD = "root";
-    private static Connection connection;
+    /**
+     * 返回结果集
+     */
     private static int result = 0;
-
-    private static Pattern pattern = Pattern.compile("[A-Z]");
+    /**
+     * 匹配大写字母
+     */
+    private static final Pattern UPPER_PATTERN = Pattern.compile("[A-Z]");
 
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -49,12 +52,13 @@ public class DbUtils {
      */
     public static <T> T uniqQuery(Class<T> clazz, String sql, Object... params) {
         T t = null;
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        ResultSet resultSet = null;
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 // 动态创建对象
                 t = clazz.newInstance();
@@ -64,19 +68,25 @@ public class DbUtils {
                     if (method.getName().contains("set")) {
                         // 获取域的名称
                         String fieldName = StringUtils.toLowerCaseFirst(method.getName().substring(3));
-                        Matcher matcher = pattern.matcher(fieldName);
+                        Matcher matcher = UPPER_PATTERN.matcher(fieldName);
                         if (matcher.find()) {
                             // 将驼峰转化为下划线
-                            fieldName = fieldName.replaceAll("[A-Z]+", "_$0").
+                            fieldName = StringUtils.humpToUnderLine(fieldName);
                         }
                         // 执行方法（给新对象设置值）
-                        System.out.println(resultSet.getObject(fieldName));
                         method.invoke(t, resultSet.getObject(fieldName));
                     }
                 }
             }
         } catch (SQLException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                assert resultSet != null;
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return t;
     }
@@ -92,27 +102,36 @@ public class DbUtils {
      */
     public static <T> List<T> query(Class<T> clazz, String sql, Object... params) {
         List<T> list = new ArrayList<>();
-        try {
-            // 动态创建对象
-            PreparedStatement statement = connection.prepareStatement(sql);
+        ResultSet resultSet = null;
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
+                // 动态创建对象
                 T t = clazz.newInstance();
                 // 反射获取所有的域（变量）
                 Field[] fields = clazz.getDeclaredFields();
-                for (int i = 0; i < fields.length; i++) {
+                for (Field field : fields) {
                     Method method =
-                            clazz.getDeclaredMethod("set" + StringUtils.toUpperCaseFirst(fields[i].getName()),
-                                    fields[i].getType());
-                    method.invoke(t, resultSet.getObject(i + 1));
+                            clazz.getDeclaredMethod("set" + StringUtils.toUpperCaseFirst(field.getName()),
+                                    field.getType());
+                    String fieldName = StringUtils.humpToUnderLine(field.getName());
+                    method.invoke(t, resultSet.getObject(fieldName));
                 }
                 list.add(t);
             }
         } catch (SQLException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                assert resultSet != null;
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return list;
     }
@@ -120,13 +139,13 @@ public class DbUtils {
     /**
      * 插入
      *
-     * @param object 具体的一个javabean
+     * @param object javaBean
      * @param sql    sql
      * @return 非0就是成功
      */
     public static int insert(Object object, String sql) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             Field[] fields = object.getClass().getDeclaredFields();
             for (int i = 1; i < fields.length; i++) {
                 Method method =
@@ -150,8 +169,8 @@ public class DbUtils {
      * @return 非0就是成功
      */
     public static int delete(String sql, Object... params) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i + 1, params[i]);
             }
@@ -162,16 +181,25 @@ public class DbUtils {
         return result;
     }
 
+    /**
+     * 更新
+     *
+     * @param object javaBean
+     * @param sql    sql
+     * @param params sql 条件
+     * @return 非零就是成功
+     */
     public static int update(Object object, String sql, Object... params) {
-        try {
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             int i = 1;
-            PreparedStatement statement = connection.prepareStatement(sql);
             Field[] fields = object.getClass().getDeclaredFields();
             for (; i < fields.length; i++) {
                 Method method =
                         object.getClass().getDeclaredMethod("get" + StringUtils.toUpperCaseFirst(fields[i].getName()));
                 statement.setObject(i, method.invoke(object));
             }
+            // 条件
             for (Object param : params) {
                 statement.setObject(i++, param);
             }

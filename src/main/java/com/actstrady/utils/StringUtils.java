@@ -45,11 +45,11 @@ public class StringUtils {
      * @param name 驼峰命名
      * @return 下划线命名
      */
-    public String humpToUnderLine(String name) {
+    public static String humpToUnderLine(String name) {
         return name.replaceAll("[A-Z]+", "_$0").toLowerCase();
     }
 
-    public String underLineToHump(String name) {
+    public static String underLineToHump(String name) {
         return name.replaceAll("(-[a-z])+", "$0");
     }
 }

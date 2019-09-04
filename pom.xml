@@ -27,11 +27,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>17.0.0</version>
-            <scope>compile</scope>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.7</version>
         </dependency>
     </dependencies>
 </project>
