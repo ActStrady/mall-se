@@ -17,10 +17,10 @@ public class CommonUtils {
      * @param list 要打印的List
      */
     public static void printList(List list) {
-        System.out.println("-------------------------------------------");
+        System.out.println("------------------------------------------------------------------");
         for (Object o : list) {
             System.out.println(o);
         }
-        System.out.println("-------------------------------------------");
+        System.out.println("------------------------------------------------------------------");
     }
 }

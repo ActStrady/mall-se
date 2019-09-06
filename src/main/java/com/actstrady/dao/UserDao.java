@@ -22,8 +22,9 @@ public class UserDao {
      * @return 用户类
      */
     public User queryByUsernameAndPassword(String username, String password) {
-        String sql = "select id, username, password, name, email, type from mall.user " +
-                "where username = ? and password= ?";
+        String sql = "select id, username, password, name, email, type, " +
+                "is_delete, create_time, update_time, delete_time " +
+                "from mall.user where username = ? and password= ?";
         return DbUtils.uniqQuery(User.class, sql, username, password);
     }
 }

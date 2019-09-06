@@ -1,5 +1,7 @@
 package com.actstrady.utils;
 
+import lombok.Cleanup;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -52,7 +54,7 @@ public class DbUtils {
      */
     public static <T> T uniqQuery(Class<T> clazz, String sql, Object... params) {
         T t = null;
-        ResultSet resultSet = null;
+        @Cleanup ResultSet resultSet = null;
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {

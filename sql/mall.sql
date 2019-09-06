@@ -49,13 +49,13 @@ create table mall.product_group
 ) comment '商品类别表';
 # 插入数据
 insert into mall.product_group(name, creator, creator_name)
-values ('男装', 1, 'admin');
+values ('男装', 1, '张三');
 insert into mall.product_group(name, creator, creator_name)
-values ('女装', 1, 'admin');
+values ('女装', 1, '张三');
 insert into mall.product_group(name, creator, creator_name)
-values ('数码', 1, 'admin');
+values ('数码', 1, '张三');
 insert into mall.product_group(name, creator, creator_name)
-values ('文娱', 1, 'admin');
+values ('文娱', 1, '张三');
 
 # 商品类别表外键
 alter table mall.product_group

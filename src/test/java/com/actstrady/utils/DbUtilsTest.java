@@ -21,7 +21,7 @@ public class DbUtilsTest {
 
     @Test
     public void insert() {
-        User user = new User("body", "123456", "李强", "adt@qq.com", 1);
+        User user = new User();
         String sql = "insert into mall.user(username, password, name, email, type) values(?, ?, ?, ?, ?)";
         System.out.println(DbUtils.insert(user, sql));
     }
@@ -34,7 +34,7 @@ public class DbUtilsTest {
 
     @Test
     public void update() {
-        User user = new User("body", "123456", "孙强", "adt@qq.com", 1);
+        User user = new User();
         String sql = "update mall.user set username = ?, password = ?, name =?, email = ?, type = ? "
                 + "where id = ?";
         DbUtils.update(user, sql, 7);
