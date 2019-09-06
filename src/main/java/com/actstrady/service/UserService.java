@@ -6,6 +6,8 @@ import com.actstrady.pojo.User;
 import java.util.Map;
 
 /**
+ * 用户业务
+ *
  * @author : ActStrady@tom.com
  * @date : 2019/8/26 19:59
  * @fileName : UserService.java
@@ -63,9 +65,10 @@ public class UserService {
 
     /**
      * 获取当前登录user
+     *
      * @return 当前登录的user
      */
-    public static User getLoginUser(){
+    public static User getLoginUser() {
         return loginUser;
     }
 }

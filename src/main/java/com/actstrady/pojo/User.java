@@ -5,6 +5,8 @@ import lombok.*;
 import java.util.Date;
 
 /**
+ * 用户
+ *
  * @author : ActStrady@tom.com
  * @date : 2019/8/26 20:01
  * @fileName : User.java

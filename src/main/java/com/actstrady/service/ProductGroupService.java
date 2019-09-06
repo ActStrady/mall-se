@@ -1,12 +1,13 @@
 package com.actstrady.service;
 
 import com.actstrady.dao.ProductGroupDao;
-import com.actstrady.dao.UserDao;
 import com.actstrady.pojo.ProductGroup;
 
 import java.util.List;
 
 /**
+ * 商品分类业务
+ *
  * @author : ActStrady@tom.com
  * @date : 2019/8/30 19:38
  * @fileName : ProductGroupService.java
@@ -35,7 +36,8 @@ public class ProductGroupService {
     }
 
     /**
-     *  根据商品分类名查询商品分类id
+     * 根据商品分类名查询商品分类id
+     *
      * @param name 商品分类名
      * @return 商品分类
      */

@@ -59,6 +59,9 @@ public class MenuUi {
         }
     }
 
+    /**
+     * 录入商品信息
+     */
     private void entryProduct() {
         ProductService productService = new ProductService();
         List<Product> products = productService.queryAllProduct();
@@ -107,6 +110,9 @@ public class MenuUi {
         }
     }
 
+    /**
+     * 录入商品分类
+     */
     public void entryProductGroup() {
         ProductGroupService productGroupService = new ProductGroupService();
         List<ProductGroup> productGroups = productGroupService.queryAllGroup();

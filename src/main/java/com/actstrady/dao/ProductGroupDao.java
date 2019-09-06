@@ -6,6 +6,8 @@ import com.actstrady.utils.DbUtils;
 import java.util.List;
 
 /**
+ * 商品分类dao
+ *
  * @author : ActStrady@tom.com
  * @date : 2019/8/30 23:49
  * @fileName : ProductGroupDao.java
@@ -14,6 +16,7 @@ import java.util.List;
 public class ProductGroupDao {
     /**
      * 插入值
+     *
      * @param productGroup 实体类
      * @return 非0成功
      */
@@ -24,6 +27,7 @@ public class ProductGroupDao {
 
     /**
      * 查询全部
+     *
      * @return list
      */
     public List<ProductGroup> queryAll() {
